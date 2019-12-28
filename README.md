@@ -1,2 +1,4 @@
-# prophet_anomaly_detection
-Time-series anomaly detection with Facebook Prophet library
+## Time-series Anomaly Detection with Prophet
+
+Time-series anomaly detection with [Prophet](https://facebook.github.io/prophet/), Facebook's open-source library ([github](https://github.com/facebook/prophet))
+
