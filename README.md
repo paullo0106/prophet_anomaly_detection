@@ -2,13 +2,51 @@
 
 Time-series anomaly detection with [Prophet](https://facebook.github.io/prophet/), Facebook's open-source library ([github](https://github.com/facebook/prophet))
 
-## Usage
+## Example
 
 As shown in the [example notebook](https://github.com/paullo0106/prophet_anomaly_detection/blob/master/example.ipynb), we added [utility functions](https://github.com/paullo0106/prophet_anomaly_detection/blob/master/utils.py) based on Facebook's Prophet time-series forecast library,
 to quickly experiment different model setting, time windows, and visualize the results in an intuitive manner.
 
 ![](https://github.com/paullo0106/prophet_anomaly_detection/blob/master/img/anomaly.png "Example")
 
+Sample code
+```
+from utils import prophet_fit, prophet_plot, get_outliers
+from fbprophet import Prophet
+
+df = ... # load and pre-process the dataframe
+
+model = Prophet(interval_width=0.98, 
+                yearly_seasonality=False, 
+                weekly_seasonality=False, 
+                changepoint_prior_scale=0.1)
+model.add_seasonality(name='weekly', period=7, fourier_order=3, prior_scale=0.1)
+
+# specify the time frames
+today_index = 48
+print('Cutoff date:', df.index[today_index])
+predict_n = 14
+lookback_n = 28
+
+# Fit the model, flag outliers, and visaulize
+fig, forecast, model = prophet_fit(df, model, today_index, 
+                                   lookback_days=lookback_n, 
+                                   predict_days=predict_n)
+outliers, df_pred = get_outliers(df, forecast, today_index, predict_days=predict_n)
+prophet_plot(df, fig, today_index, lookback_days=lookback_n, 
+             predict_days=predict_n, outliers=outliers)
+```
+
+Std output :
+```
+Cutoff date: 2011-02-18 00:00:00
+Use the data from 2011-01-21 00:00:00 to 2011-02-17 00:00:00 (28 days)
+Predict 2011-02-18 00:00:00 to 2011-03-03 00:00:00 (14 days)
+=====
+actual value 7.70481192293259 fall outside of the prediction interval
+interval: 6.3404198851091795 to 7.6402990998391225
+Date: 2011-03-03
+```
 
 ## More information
 
